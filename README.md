@@ -1,2 +1,6 @@
-# HGN_Internship
-Tasks carried out during the HNG Internship
+# Payments
+
+First trial with payment APIs
+
+
+### *Ataman*
