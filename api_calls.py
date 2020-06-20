@@ -1,37 +1,35 @@
 import requests
-import json 
+import json
 import os.path
 from pprint import pprint as pp
+from config import base_dir, base_url
+from config import PUBLIC_KEY, SECRET_KEY
+from config import PUBLIC_KEY_SANDBOX, SECRET_KEY_SANDBOX
 
 
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = "TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-256-GCM-SHA384:ECDHE:!COMPLEMENTOFDEFAULT"
-basedir = os.path.dirname(__file__)
-
-url = "https://api.wallets.africa/bills/airtime/purchase"
-url2 = "https://api.wallets.africa/self/verifybvn"
-
-public = "rjhjr8uul9m7"
-secret = "st01hemwu0en"
-
-public2 = "uvjqzm5xl6bw"
-secret2 = "hfucj5jatq8h"
-
-payload = {#"Code": "etisalat",
-           #"Amount": 100,
-           #"PhoneNumber": "08097829320",
-           "bvn": "22409903043",
-           "dateOfBirth": "06-04-1998",
-           "SecretKey": secret,
-           }
-           
-headers = {'Content-Type': 'application/json',
-           'Authorization': 'Bearer ' + public,
+# requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS = "TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-128-GCM-SHA256:TLS13-AES-256-GCM-SHA384:ECDHE:!COMPLEMENTOFDEFAULT"
+headers = {
+           'Content-Type': 'application/json',
+           'Authorization': 'Bearer ' + PUBLIC_KEY,
            }
 
-response = requests.request("POST", url2, headers=headers, data=json.dumps(payload))
 
-#with open(os.path.join(basedir, 'ere.html'), 'w') as file:
-#    file.write(response.text)
+def airtime_recharge(phone_number, amount, provider_code):
+    url = base_url + '/bills/airtime/purchase'
+    payload = {
+               "Code": provider_code,
+               "Amount": amount,
+               "PhoneNumber": phone_number,
+               "SecretKey": SECRET_KEY,
+               }
+    response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+    return json.loads(response.text)
 
 
-pp(json.loads(response.text))
+def resolve_bvn_self(bvn, date_of_birth):
+    payload = {
+        "bvn": bvn,
+        "dateOfBirth": date_of_birth,
+        "SecretKey": SECRET_KEY,
+    }
+#
